@@ -25,8 +25,16 @@ public function ajouterunarticlehtml5()
 // le bouton 'submit', boutonAjouter est <> de NULL, on a posté quelque chose.
 $donneesAInserer = array(
   'LIBELLE' => $this->input->post('txtTitre'),
+  'TYPE' => $this->input->post('txtType'),
+  'NOCATEGORIE' => $this->input->post('txtCategorie'),
+  'NOMARQUE' => $this->input->post('txtMarque'),
+  'DATEAJOUT' => $this->input->post('txtDate'),
+  'PRIXHT' => $this->input->post('txtPrix'),
+  'TAUXTVA' => $this->input->post('txtTVA'),
   'DETAIL' => $this->input->post('txtTexte'),
+  'QUANTITEENSTOCK' => $this->input->post('txtQuantite'),
   'NOMINAGE' => $this->input->post('txtNomFichierImage')
+  
 ); // cTitre, cTexte, cNomFichierImage : champs de la table tabarticle
 $this->ModeleArticle->insererUnArticle($donneesAInserer); // appel du modèle
 $this->load->helper('url'); // helper chargé pour utilisation de site_url (dans la vue)
