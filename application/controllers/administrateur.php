@@ -1,52 +1,59 @@
+
 <?php
-Class Administrateur extends CI_controller{
+class Administrateur extends CI_Controller {
 
-public function __construct()
-{
-    parent::__construct();
-    $this->load->model('modeleproduit');
-    $this->load->library('session');
-
-    if ($this->session->statut==0) //redirection si pas administrateur
+    public function __construct()
     {
-        $this->load->helper('url');
-    //    redirect('/visiteur/seconnecter'); 
-    }
-} //fin __construct
+        parent::__construct();
+        $this->load->model('ModeleProduit');
+
+        /* les méthodes du contrôleur Administrateur doivent n'être
+        accessibles qu'à l'administrateur (Nota Bene : a chaque appel
+        d'une méthode d'Administrateur on a appel d'abord du constructeur */
+
+        $this->load->library('session');
+        if ($this->session->statut==0) // 0 : statut visiteur
+        {
+            $this->load->helper('url'); // pour utiliser redirect
+            //redirect('/visiteur/seConnecter'); // pas les droits : redirection vers connexion
+        }
+    } // __construct
 
 
-public function ajouterunarticlehtml5()
-{
-  $this->load->helper('form');
-  $DonneesInjectees['TitreDeLaPage'] = 'Ajouter un article';
- 
-  if ($this->input->post('boutonAjouter')) // On test si le formulaire a été posté.
-  {
-// le bouton 'submit', boutonAjouter est <> de NULL, on a posté quelque chose.
-$donneesAInserer = array(
-  'LIBELLE' => $this->input->post('txtTitre'),
-  'TYPE' => $this->input->post('txtType'),
-  'NOCATEGORIE' => $this->input->post('txtCategorie'),
-  'NOMARQUE' => $this->input->post('txtMarque'),
-  'DATEAJOUT' => $this->input->post('txtDate'),
-  'PRIXHT' => $this->input->post('txtPrix'),
-  'TAUXTVA' => $this->input->post('txtTVA'),
-  'DETAIL' => $this->input->post('txtTexte'),
-  'QUANTITEENSTOCK' => $this->input->post('txtQuantite'),
-  'NOMINAGE' => $this->input->post('txtNomFichierImage')
-  
-); // cTitre, cTexte, cNomFichierImage : champs de la table tabarticle
-$this->ModeleArticle->insererUnArticle($donneesAInserer); // appel du modèle
-$this->load->helper('url'); // helper chargé pour utilisation de site_url (dans la vue)
-$this->load->view('administrateur/insertionReussie');
-  }
-  else
-  {  
-/* si formulaire non posté = bouton 'submit' à NULL : on est jamais passé par le formulaire -> on envoie le formulaire */
-$this->load->view('templates/header');
-$this->load->view('administrateur/ajouterunarticlehtml5', $DonneesInjectees);
-$this->load->view('templates/footer');
-  }
-} // ajouterUnArticleHTML5
+    public function ajouterUnProduit()
+    {
+        $this->load->helper('form');
+        $DonneesInjectees['TitreDeLaPage'] = 'Ajouter un produit';
 
-} //class
+        // l'image n'est pas obligatoire : pas required
+
+        if ($this->input->post('boutonAjouter')) //on test si le formulaire a été posté
+        {
+          $DonneesAInserer = array(
+          'LIBELLE' => $this->input->post('txtTitre'),
+          'TYPE' => $this->input->post('txtType'),
+          'NOCATEGORIE' => $this->input->post('txtCategorie'),
+          'NOMARQUE' => $this->input->post('txtMarque'),
+          'DATEAJOUT' => $this->input->post('txtDate'),
+          'PRIXHT' => $this->input->post('txtPrix'),
+          'TAUXTVA' => $this->input->post('txtTVA'),
+          'DETAIL' => $this->input->post('txtTexte'),
+          'QUANTITEENSTOCK' => $this->input->post('txtQuantite'),
+          'NOMINAGE' => $this->input->post('txtNomFichierImage')
+            );
+            //var_dump($DonneesAInserer);
+            $this->ModeleProduit->InsererUnArticle($DonneesAInserer); //appel du modele
+            $this->load->helper('url'); // helper chargé pour l'utilisation de site_url (dans la vue)
+            $this->load->view('Administrateur/InsertionReussie');
+        }
+        else
+        {
+        // Si le formulaire non posté = bouton 'submit' à NULL : on est jamais passé dans le formulaire 
+        // -> on envoie le formulaire !!!
+        $this->load->view('templates/Header');
+        $this->load->view('administrateur/AjouterUnProduit', $DonneesInjectees);
+        $this->load->view('templates/Footer');
+        }   
+    } // ajouterUnArticle
+
+} //Class
